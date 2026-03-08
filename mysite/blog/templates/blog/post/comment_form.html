@@ -1,0 +1,8 @@
+<h2>Add a new comment</h2>
+<form action="{% url 'blog:post_comment' post.id %}" method="post">{#ΠΗΓΑΙΝΩ ΣΤΟ PATH#}
+    {% csrf_token %}{#ΠΙΣΤΟΠΟΙΗΣΗ#}
+
+    {{ form.as_p }}{#ΦΤΟΙΑΧΝΕΙ ΤΗΝ ΦΟΡΜΑ#}
+
+    <p><input type="submit" value="Add comment"></p>
+</form>

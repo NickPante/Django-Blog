@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %}
+{% block content %}
+{% if comment %}
+<h2>Το σχόλιό σας προστέθηκε επιτυχώς!</h2>
+<p><a href="{{ post.get_absolute_url }}">Επιστροφή στο άρθρο</a></p>
+{% else %}
+<h2>Προσθήκη σχολίου</h2>
+{% include "blog/post/comment_form.html" %}
+{% endif %}
+{% endblock %}

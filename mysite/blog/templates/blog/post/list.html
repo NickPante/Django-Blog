@@ -1,0 +1,31 @@
+{#text-3xl ΑΛΛΑΓΗ ΜΕΓΕΘΟ ΚΕΙΜΕΝΟΥ,font-bold ΕΝΤΟΝΗ ΓΡΑΜΜΗ,mb-8 ΑΦΗΝΕΙ ΚΕΝΟ ΧΩΡΟ,space-y-8 ΒΑΖΕΙ ΚΕΝΟ ΣΤΑ ΑΡΘΡΑ,border-b
+ΒΑΖΕΙ ΛΕΠΤΗ ΓΡΑΜΜΗ,pb-6 ΠΑΡΑΓΡΑΦΟΣ,text-2xl ΜΙΚΡΟΤΕΡΟ ΜΕΓΕΘΟΣ,font-semibold ΗΜΙ ΕΝΤΟΝΑ ΓΡΑΜΜΑΤΑ,text-sm ΜΙΚΡΟΤΕΡΟ
+ΜΕΓΕΘΟΣ,mt-2 ΑΠΟΣΤΑΣΗ ΑΠΟ ΤΟ ΚΕΙΜΕΝΟ #}
+{% extends "base.html" %}
+{% block title %}Το Blog μου{% endblock %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-8">Το Blog μου</h1>
+<div class="space-y-8">
+    {% for post in posts %}
+    <article class="border-b pb-6">
+        <h2 class="text-2xl font-semibold text-blue-600 hover:underline">
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </h2>
+        <p class="text-gray-500 text-sm mb-4">
+            Δημοσιεύτηκε στις {{ post.publish|date:"d M Y" }} από {{ post.author.username }}
+        </p>
+        <p class="text-gray-700">
+            {{ post.body|truncatewords:30 }}
+        </p>
+        <a href="{{ post.get_absolute_url }}" class="text-indigo-600 font-bold mt-2 inline-block">
+            Διαβάστε περισσότερα &rarr;
+        </a>
+    </article>
+    {% empty %}
+    <p>Δεν υπάρχουν ακόμα αναρτήσεις.</p>
+    {% endfor %}
+</div>
+<div class="mt-10">
+    {% include "pagination.html" with page=posts %}
+</div>
+{% endblock %}

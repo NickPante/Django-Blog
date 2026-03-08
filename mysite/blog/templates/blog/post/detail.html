@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<article class="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-4">
+        {{ post.title }}
+    </h1>
+
+    <p class="text-sm text-gray-500 mb-4 border-b border-gray-100 pb-4">
+        Published on {{ post.publish|date:"d M Y" }} by <strong>{{ post.author }}</strong>
+    </p>
+
+    {% if post.tags.all %}
+    <div class="mb-8 flex flex-wrap items-center gap-2">
+        <span class="text-sm font-bold text-gray-700">Tags:</span>
+        {% for tag in post.tags.all %}
+        <a href="#"
+            class="bg-indigo-100 text-indigo-700 hover:bg-indigo-200 text-xs font-bold px-3 py-1 rounded-full no-underline transition-colors">
+            {{ tag.name }}
+        </a>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="prose max-w-none text-gray-800 leading-relaxed [&>p]:mb-4">
+        {{ post.body|linebreaks }}
+    </div>
+</article>
+
+<div class="mt-10 bg-gray-50 p-8 rounded-lg border border-gray-200 shadow-sm">
+
+    {% with comments.count as total_comments %}
+    <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b border-gray-300 pb-2">
+        {{ total_comments }} comment{{ total_comments|pluralize }}
+    </h2>
+    {% endwith %}
+
+    <div class="space-y-6 mb-10">
+        {% for comment in comments %}
+        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+            <p class="text-sm font-bold text-indigo-600 mb-2">
+                {{ comment.name }}
+                <span class="font-normal text-gray-400 text-xs ml-2">{{ comment.created|date:"d M Y, H:i" }}</span>
+            </p>
+            <div class="text-gray-700 text-sm leading-relaxed">
+                {{ comment.body|linebreaks }}
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-gray-500 italic">No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+
+    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 class="text-xl font-bold mb-4 text-gray-900">Add a comment</h3>
+        <form method="post" class="space-y-4">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <p class="mt-4">
+                <button type="submit"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors border-none cursor-pointer">
+                    Submit Comment
+                </button>
+            </p>
+        </form>
+    </div>
+
+</div>
+
+<div class="mt-8 text-center">
+    <a href="{% url 'blog:post_list' %}"
+        class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg transition-colors no-underline">
+        &larr; Back to Posts
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{#flex items-center justify-between:ΕΥΘΥΓΡΑΜΙΖΕΙ ΚΑΙ ΑΦΗΝΕΙ ΚΕΝΟ,border-t border-gray-200 ΛΕΠΤΗ ΓΚΡΙ ΓΡΑΜΜΗ,px-4 py-3
+sm:px-6ΚΑΝΕΙ ΓΕΜΙΣΜΑ,ring-1 ring-inset ring-gray-300ΚΟΜΨΟ ΠΕΡΙΒΛΗΜΑ#}
+<nav class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 mt-10"
+    aria-label="Pagination">
+    <div class="hidden sm:block">
+        <p class="text-sm text-gray-700">{#ΕΜΦΑΝΙΖΕΙ ΤΑ ΝΟΥΜΕΡΑ ΑΠΟ ΤΙΣ ΣΕΛΙΔΕΣ#}
+            Σελίδα <span class="font-medium">{{ page.number }}</span> από <span class="font-medium">{{
+                page.paginator.num_pages }}</span>
+        </p>
+    </div>
+    <div class="flex flex-1 justify-between sm:justify-end">
+        {% if page.has_previous %}{#ΚΟΥΜΠΙ ΓΙΑ ΠΡΟΗΓΟΥΜΕΝΗ ΣΕΛΙΔΑ ΑΝ ΥΠΑΡΧΕΙ#}
+        <a href="?page={{ page.previous_page_number }}"
+            class="relative inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
+            Previous
+        </a>
+        {% endif %}
+
+        {% if page.has_next %}{#ΚΟΥΜΠΙ ΓΙΑ ΕΠΟΜΕΝΗ ΣΕΛΙΔΑ ΑΝ ΥΠΑΡΧΕΙ#}
+        <a href="?page={{ page.next_page_number }}"
+            class="relative ml-3 inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:outline-offset-0">
+            Next
+        </a>
+        {% endif %}
+    </div>
+</nav>

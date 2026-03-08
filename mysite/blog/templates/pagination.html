@@ -1,0 +1,25 @@
+{#border-t pt-4 ΓΚΡΙΖΑ ΓΡΑΜΜΗ,flex justify-between ΒΑΖΕΙ ΑΡΙΣΤΕΡΑ ΚΑΙ ΔΕΞΙΑ ΤΑ ΚΟΥΜΠΙΑ,hover:underline ΜΠΛΕ
+ΥΠΟΓΡΑΜΙΣΕΙΣ,&larr &rarr ΒΕΛΗ HTML;#}
+<div class="mt-8 flex justify-between items-center border-t pt-4">
+
+    <div>
+        {% if page.has_previous %}
+        <a href="?page={{ page.previous_page_number }}" class="text-blue-600 hover:underline font-medium">
+            &larr; Previous
+        </a>
+        {% endif %}
+    </div>
+
+    <span class="text-sm text-gray-500">
+        Σελίδα {{ page.number }} από {{ page.paginator.num_pages }}
+    </span>
+
+    <div>
+        {% if page.has_next %}
+        <a href="?page={{ page.next_page_number }}" class="text-blue-600 hover:underline font-medium">
+            Next &rarr;
+        </a>
+        {% endif %}
+    </div>
+
+</div>
