@@ -19,22 +19,17 @@ def post_list(request):
     )  # ΣΤΕΛΝΕΙ ΤΑ POST ΣΤΟ HTML
 
 
-def post_detail(request, year, month, day, post):  # ΚΑΛΗ ΤΟ ΣΥΓΚΕΚΡΙΜΕΝΟ POST
+def post_detail(request, year, month, day, post):
     post = get_object_or_404(
-        Post, slug=post, publish__year=year, publish__month=month, publish__day=day
-    )  # 404 Not Found
-    comments = post.comments.filter(active=True)
-    if request.method == "POST":  # ΑΝ ΑΠΟΣΤΕΙΛΕΙ ΣΧΟΛΙΟ
-        form = CommentForm(data=request.POST)  # ΔΙΑΒΑΖΕΙ ΤΑ ΔΕΔΟΜΕΝΑ
-        if form.is_valid():
-            comment = form.save(commit=False)  # ΦΤΟΙΑΧΝΕΙ ΤΟ ΣΧΟΛΙΟ
-            comment.post = post  # ΤΟ ΕΝΩΝΕΙ ΜΕ ΤΟ ΑΡΘΡΟ
-            comment.save()  # ΤΟ ΑΠΟΘΗΚΕΥΕΙ
-            form = CommentForm()  # ΑΡΧΙΚΟΠΟΙΗ ΤΟ ΦΟΡΜΑ
-    else:
-        form = CommentForm()  # ΑΡΧΙΚΟΠΟΙΗ ΤΟ ΦΟΡΜΑ
-
-    form = CommentForm()
+        Post,
+        slug=post,
+        status=Post.Status.PUBLISHED,
+        publish__year=year,
+        publish__month=month,
+        publish__day=day,
+    )#ΨΑΧΝΕΙ ΤΟ POST
+    comments = post.comments.filter(active=True)#ΔΕΧΕΤΑΙ ΤΑ ΕΝΕΡΓΑ POST
+    form = CommentForm()#ΔΗΜΙΟΥΡΓΙΑ ΜΙΑΣ ΦΟΡΜΑ ΜΕ ΤΑ COMMENT ΠΟΥ ΣΤΕΛΝΕΤΑΙ ΣΤΑ HTML
     return render(
         request,
         "blog/post/detail.html",

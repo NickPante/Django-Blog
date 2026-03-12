@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ post.title }}{% endblock %}
+
 {% block content %}
 <article class="bg-white p-8 rounded-lg shadow-sm border border-gray-200">
     <h1 class="text-3xl font-extrabold text-gray-900 mb-4">
@@ -9,7 +10,7 @@
     <p class="text-sm text-gray-500 mb-4 border-b border-gray-100 pb-4">
         Published on {{ post.publish|date:"d M Y" }} by <strong>{{ post.author }}</strong>
     </p>
-
+{#ΕΜΦΑΝΙΖΕΙ ΤΑ TAGS#}
     {% if post.tags.all %}
     <div class="mb-8 flex flex-wrap items-center gap-2">
         <span class="text-sm font-bold text-gray-700">Tags:</span>
@@ -21,14 +22,14 @@
         {% endfor %}
     </div>
     {% endif %}
-
+{#ΑΛΛΑΖΕΙ ΤΗΝ ΔΟΜΗ ΤΟΥ ΚΕΙΜΕΝΟΥ ΓΙΑ ΝΑ ΕΙΝΑΙ ΠΙΟ ΕΥΑΝΑΓΝΩΣΤΕΙ#}
     <div class="prose max-w-none text-gray-800 leading-relaxed [&>p]:mb-4">
         {{ post.body|linebreaks }}
     </div>
 </article>
 
 <div class="mt-10 bg-gray-50 p-8 rounded-lg border border-gray-200 shadow-sm">
-
+{#ΥΠΟΛΟΓΙΖΕΙ ΤΩΝ ΣΥΝΩΛΛΩΝ ΤΩΝ ΣΧΩΛΙΩΝ#}
     {% with comments.count as total_comments %}
     <h2 class="text-2xl font-bold mb-6 text-gray-900 border-b border-gray-300 pb-2">
         {{ total_comments }} comment{{ total_comments|pluralize }}
@@ -36,6 +37,7 @@
     {% endwith %}
 
     <div class="space-y-6 mb-10">
+        {#ΤΡΕΧΕΙ ΟΛΑ ΤΑ ΣΧΩΛΙΑ ΤΟΥ ΚΕΙΜΕΝΟΥ#}
         {% for comment in comments %}
         <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
             <p class="text-sm font-bold text-indigo-600 mb-2">
@@ -53,12 +55,17 @@
 
     <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
         <h3 class="text-xl font-bold mb-4 text-gray-900">Add a comment</h3>
-        <form method="post" class="space-y-4">
-            {{ form.as_p }}
+        {#ΣΤΕΛΝΕΙ ΤΑ ΔΕΔΟΜΕΝΑ ΤΟΥ ΣΧΩΛΙΟΥ ΣΤΟ VIEW.PY#}
+        <form action="{% url 'blog:post_comment' post.id %}" method="post" class="space-y-4">
             {% csrf_token %}
+
+            <div class="form-style text-gray-700">
+                {{ form.as_p }}
+            </div>
+
             <p class="mt-4">
                 <button type="submit"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors border-none cursor-pointer">
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition-colors border-none cursor-pointer w-full sm:w-auto">
                     Submit Comment
                 </button>
             </p>
@@ -68,6 +75,7 @@
 </div>
 
 <div class="mt-8 text-center">
+    {#ΠΗΓΕΝΕΙ ΣΤΟ post_list TOY VIEW.PY #}
     <a href="{% url 'blog:post_list' %}"
         class="inline-block bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-6 rounded-lg transition-colors no-underline">
         &larr; Back to Posts
