@@ -1,6 +1,6 @@
 from django import forms
 from .models import Comment
-
+from .models import Post
 
 class EmailPostForm(forms.Form):
     name = forms.CharField(max_length=25)  # ΟΝΟΜΑ
@@ -13,3 +13,7 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["name", "email", "body"]  # ΤΑ ΠΑΙΔΙΑ ΠΟΥ ΘΑ ΕΜΦΑΝΙΖΟΝΤΑΙ
+class PostCreateForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'body', 'tags']

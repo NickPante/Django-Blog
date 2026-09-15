@@ -35,6 +35,19 @@
             font-size: 0.875rem;
             padding: 6px 12px !important;
         }
+
+        /* ΚΟΥΜΠΙ ΔΗΜΙΟΥΡΓΙΑΣ POST */
+        .create-btn {
+            background-color: #10b981 !important;
+            color: white !important;
+            text-decoration: none !important;
+            font-size: 0.875rem;
+            padding: 6px 12px !important;
+            border-radius: 6px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -45,18 +58,25 @@
 
             <a href="{% url 'blog:post_list' %}" class="text-2xl font-bold">MyBlog</a>
 
-            <div class="absolute right-4">
+            <div class="absolute right-4 flex items-center space-x-3">
                 {% if request.user.is_authenticated %}
+                <span class="text-sm font-medium text-gray-700 hidden sm:inline">
+                    Καλωσόρισες, <strong>{{ request.user.username }}</strong>!
+                </span>
+                {# ΚΟΥΜΠΙ ΓΙΑ ΔΗΜΙΟΥΡΓΙΑ POST ΜΟΝΟ ΟΤΑΝ ΕΙΝΑΙ ΣΥΝΔΕΔΕΜΕΝΟΣ Ο ΧΡΗΣΤΗΣ #}
+                <a href="{% url 'blog:post_create' %}" class="create-btn">
+                    + Νέο Post
+                </a>
                 <form action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
                     <button type="submit" class="logout-btn">
-                        Logout
+                        Αποσύνδεση
                     </button>
                 </form>
                 {% else %}
                 <a href="{% url 'login' %}"
                     class="text-sm font-bold text-gray-700 hover:text-indigo-600 border border-gray-300 px-3 py-1.5 rounded">
-                    Login
+                    Σύνδεση
                 </a>
                 {% endif %}
             </div>

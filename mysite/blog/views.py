@@ -1,9 +1,13 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.core.paginator import Paginator
-from .models import Post
 from django.core.mail import send_mail
-from .forms import EmailPostForm, CommentForm
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.utils.text import slugify
+from django.utils import timezone  # <-- ΠΡΟΣΘΗΚΗ ΓΙΑ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ/ΩΡΑ
+
+from .models import Post
+from .forms import EmailPostForm, CommentForm, PostCreateForm
 
 
 # Create your views here.
@@ -27,9 +31,9 @@ def post_detail(request, year, month, day, post):
         publish__year=year,
         publish__month=month,
         publish__day=day,
-    )#ΨΑΧΝΕΙ ΤΟ POST
-    comments = post.comments.filter(active=True)#ΔΕΧΕΤΑΙ ΤΑ ΕΝΕΡΓΑ POST
-    form = CommentForm()#ΔΗΜΙΟΥΡΓΙΑ ΜΙΑΣ ΦΟΡΜΑ ΜΕ ΤΑ COMMENT ΠΟΥ ΣΤΕΛΝΕΤΑΙ ΣΤΑ HTML
+    )  # ΨΑΧΝΕΙ ΤΟ POST
+    comments = post.comments.filter(active=True)  # ΔΕΧΕΤΑΙ ΤΑ ΕΝΕΡΓΑ POST
+    form = CommentForm()  # ΔΗΜΙΟΥΡΓΙΑ ΜΙΑΣ ΦΟΡΜΑ ΜΕ ΤΑ COMMENT ΠΟΥ ΣΤΕΛΝΕΤΑΙ ΣΤΑ HTML
     return render(
         request,
         "blog/post/detail.html",
@@ -55,8 +59,8 @@ def post_share(request, post_id):
                 subject, message, "admin@myblog.com", [cd["to"]]
             )  # ΣΥΝΘΕΣΗ ΤΟΥ ΚΕΙΜΕΝΟΥ ΚΑΙ ΤΙΤΛΟΥ ΤΩΝ ΔΕΔΟΜΕΝΩΝ
             sent = True  # FLAG
-    else:
-        form = EmailPostForm()
+        else:
+            form = EmailPostForm()
 
     return render(
         request, "blog/post/share.html", {"post": post, "form": form, "sent": sent}
@@ -79,3 +83,22 @@ def post_comment(request, post_id):
         "blog/post/comment.html",
         {"post": post, "form": form, "comment": comment},
     )  # ΤΟ ΕΠΙΣΤΡΕΦΕΙ ΣΤΗΝ HTML
+
+
+@login_required  # ΕΠΙΤΡΕΠΕΙ ΤΗΝ ΠΡΟΣΒΑΣΗ ΜΟΝΟ ΣΕ ΣΥΝΔΕΔΕΜΕΝΟΥΣ ΧΡΗΣΤΕΣ
+def post_create(request):
+    if request.method == "POST":
+        form = PostCreateForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = request.user  # ΣΥΝΔΕΕΙ ΤΟ POST ΜΕ ΤΟΝ ΣΥΝΔΕΔΕΜΕΝΟ ΧΡΗΣΤΗ
+            post.slug = slugify(post.title)  # ΔΗΜΙΟΥΡΓΕΙ ΤΟ SLUG ΑΠΟ ΤΟΝ ΤΙΤΛΟ
+            post.status = Post.Status.PUBLISHED  # ΟΡΙΖΕΙ ΤΟ POST ΩΣ ΔΗΜΟΣΙΕΥΜΕΝΟ
+            post.publish = timezone.now()  # ΟΡΙΖΕΙ ΤΗΝ ΗΜΕΡΟΜΗΝΙΑ/ΩΡΑ ΔΗΜΟΣΙΕΥΣΗΣ
+            post.save()  # ΑΠΟΘΗΚΕΥΕΙ ΤΟ POST ΣΤΗ ΒΑΣΗ
+            form.save_m2m()  # ΑΠΑΡΑΙΤΗΤΟ ΓΙΑ ΤΗΝ ΑΠΟΘΗΚΕΥΣΗ ΤΩΝ TAGS (MANY-TO-MANY)
+            return redirect(post.get_absolute_url())  # ΑΝΑΚΑΤΕΥΘΥΝΣΗ ΣΤΟ ΑΡΘΡΟ ΠΟΥ ΜΟΛΙΣ ΦΤΙΑΧΤΗΚΕ
+    else:
+        form = PostCreateForm()
+
+    return render(request, "create.html", {"form": form})

@@ -11,34 +11,17 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
 from decouple import config
-
-EMAIL_HOST = config("EMAIL_HOST")
-EMAIL_HOST_USER = config("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
-EMAIL_PORT = config("EMAIL_PORT", cast=int)
-EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool)
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-humukq4yr_seuy#9=@$8nx9^e!j@+7e*l_w+48yuyj)rmtncdb"
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
-
 # Application definition
-
 INSTALLED_APPS = [
     "account",
     "django.contrib.admin",
@@ -66,7 +49,7 @@ ROOT_URLCONF = "mysite.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],  # ΓΙΑ ΝΑ ΒΡΕΙ ΤΟ base.html
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -80,10 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "mysite.wsgi.application"
 
-
 # Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -91,10 +71,7 @@ DATABASES = {
     }
 }
 
-
 # Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -110,29 +87,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/6.0/howto/static-files/
-
 STATIC_URL = "static/"
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'#ΤΟ ΠΕΡΙΕΧΟΜΕΝΟΥ ΤΟΥ EMAIL ΕΜΦΑΝΙΖΕΤΑΙ ΣΤΟ TERMINAL
+# Email settings για τοπικές δοκιμές
+# Τα email θα εμφανίζονται απευθείας στο τερματικό χωρίς εξωτερικό SMTP server
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_HOST = config("EMAIL_HOST", default="localhost")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
 
-LOGIN_REDIRECT_URL = (
-    "blog:post_list"  # ΟΠΟΤΕ ΓΊΝΕΤΑΙ LOGIN ΣΕ ΠΑΕΙ ΣΤΗΝ ΣΕΛΙΔΑ ΜΕ ΤΑ POST
-)
-LOGOUT_REDIRECT_URL = (
-    "blog:post_list"  # ΟΠΟΤΕ ΓΊΝΕΤΑΙ LOGOUT ΣΕ ΠΑΕΙ ΣΤΗΝ ΣΕΛΙΔΑ ΜΕ ΤΑ POST
-)
+LOGIN_REDIRECT_URL = "blog:post_list"
+LOGOUT_REDIRECT_URL = "blog:post_list"
